@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <title>Bate-papo Node.js e Socket.IO</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+
+    <!-- navbar -->
+
+    <navbar id="navbar"> 
+      <div class="navbar-container">
+          <img src="img/logo (1).png" alt="" class="logo"/>
+          <ul class="navbar-items"> 
+             <a href="/public/index.html"> <li class="navbar-item">Início</li></a>
+             <a href=""><li class="navbar-item">Chat</li></a> 
+              <a href=""><li class="navbar-item">Mensagens</li></a>
+          </ul>
+      </div>
+  </navbar>
+
+  <!-- chat -->
+    <div class="wrapper fadeInDown">
+      <div class="content-login">
+        <h2 class="active"> CHAT </h2>
+        <span id="mensagens"></span>
+        <form class="box-login">
+          <input id="nome" class="campo" placeholder="Seu nome de usuário" autocomplete="off" /><br>
+          <input id="mensagem" class="campo" placeholder="Sua mensagem" autocomplete="off" /><button class="botao" >Enviar</button>
+        </form>
+      </div>
+    </div>
+
+       <!-- Footer-->
+       <footer id="footer"> 
+        <div class="footer-content"> 
+            <img src="img/logo (1).png" alt="" class="logo"> 
+            <ul class="footer-menu"> 
+                <p>Empresa</p>
+                <li class="footer-menu-item"> 
+                    Sobre 
+                </li>
+                <li class="footer-menu-item"> 
+                    Empregos 
+                </li>
+                <li class="footer-menu-item"> 
+                    For the records
+                </li>
+            </ul>
+
+            <ul class="footer-menu"> 
+                <p>Comunidades</p>
+                <li class="footer-menu-item"> 
+                    Para Artistas 
+                </li>
+                <li class="footer-menu-item"> 
+                    Desenvolvedores 
+                </li>
+                <li class="footer-menu-item"> 
+                    Marcas
+                </li>
+                <li class="footer-menu-item"> 
+                    Inverstidores
+                </li>
+                <li class="footer-menu-item"> 
+                    Fornecedores
+                </li>
+            </ul>
+
+            <ul class="footer-menu"> 
+                <p>Links úteis</p>
+                <li class="footer-menu-item"> 
+                    Ajuda 
+                </li>
+                <li class="footer-menu-item"> 
+                    Player da Web
+                </li>
+                <li class="footer-menu-item"> 
+                    Aplicativo móvel Grátis
+                </li>
+            </ul>
+
+            <div class="socials">
+
+                <i class="fa-brands fa-instagram"></i>
+                <i class="fa-brands fa-twitter"></i>
+                <i class="fa-brands fa-facebook"></i>
+                
+            </div> 
+            
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+            
+    <script src="https://kit.fontawesome.com/41c67a60df.js" crossorigin="anonymous"></script>
+
+
+    <!-- Importa o script do Socket.IO -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      // Cria uma instância do Socket.IO
+      const socket = io();
+      // Seleciona o input do nome do usuário
+      const nomeInput = document.getElementById('nome');
+      // Seleciona o input da mensagem
+      const mensagemInput = document.getElementById('mensagem');
+      // Seleciona a lista de mensagens
+      const mensagens = document.getElementById('mensagens');
+
+      // Adiciona um evento de escuta para o envio do formulário
+      document.querySelector('form').addEventListener('submit', event => {
+        // Previne o envio padrão do formulário
+        event.preventDefault();
+        // Obtém o valor do input do nome do usuário
+        const nome = nomeInput.value;
+        // Obtém o valor do input da mensagem
+        const mensagem = mensagemInput.value;
+        // Verifica se ambos os campos foram preenchidos antes de enviar a mensagem
+        // Verifica se os valores são válidos (não estão em branco)
+        //trim() é um método da linguagem JavaScript que remove os espaços em branco do início e do final de uma string.
+        // emit envia um evento chamado "chat message" com um objeto contendo os valores de nome e mensagem para o servidor.
+        nome.trim() && mensagem.trim() && socket.emit('chat message', { nome, mensagem });
+        // Limpa o input da mensagem
+        mensagemInput.value = '';
+        // Desabilita o input do nome do usuário após a primeira mensagem
+        nomeInput.disabled = true; 
+      });
+
+      // Adiciona um evento de escuta para o evento de mensagem recebido do servidor
+      socket.on('chat message', dados => {
+        // Cria um elemento de lista para exibir a mensagem
+        const lista = document.createElement('li');
+        // Define o texto da mensagem
+        lista.textContent = `${dados.nome}: ${dados.mensagem}`;
+        // Adiciona o elemento de lista à lista de mensagens
+        mensagens.appendChild(lista);
+      });
+    </script>
+  </body>
+</html>
